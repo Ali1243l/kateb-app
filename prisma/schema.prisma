@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  reports   Report[]
+}
+
+model Report {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  
+  // Input Data
+  studentName    String
+  universityName String
+  department     String
+  academicStage  String
+  groupSection   String
+  professorName  String
+  reportTitle    String
+  topicDesc      String
+  
+  // Settings
+  includeImages  Boolean
+  pageLength     Int
+  formatType     FormatType // enum: PDF, WORD, PPT
+  
+  // Template & Content
+  templateId     String
+  content        Json     // AI Generated content structure { intro, body, conclusion, references }
+  
+  status         ReportStatus @default(COMPLETED) // enum: PENDING, COMPLETED, FAILED
+  createdAt      DateTime @default(now())
+}
+
+enum FormatType {
+  PDF
+  WORD
+  PPT
+}
+
+enum ReportStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

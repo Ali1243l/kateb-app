@@ -14,6 +14,7 @@ export default function NewReportForm() {
     academicStage: "",
     groupSection: "",
     professorName: "",
+    subjectName: "",
     reportTitle: "",
     topicDesc: "",
     includeImages: true,
@@ -81,16 +82,16 @@ export default function NewReportForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   <div>
-                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">عنوان الوثيقة</label>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">عنوان التقرير</label>
                     <input type="text" value={formData.reportTitle} onChange={e => updateForm("reportTitle", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5 font-bold text-lg" placeholder="مثال: ديناميكية الموائع" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">اسم الباحث</label>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">اسم الطالب</label>
                     <input type="text" value={formData.studentName} onChange={e => updateForm("studentName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="الاسم الكامل" />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">نطاق التوجيه للذكاء الاصطناعي</label>
-                    <textarea value={formData.topicDesc} onChange={e => updateForm("topicDesc", e.target.value)} rows={4} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5 resize-none leading-relaxed" placeholder="صف بالضبط ما يجب أن تتضمنه هذه الوثيقة. اذكر أهم المحاور، النظريات، والمراجع..."></textarea>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">اكتب شرح للذكاء الاصطناعي عن الموضوع</label>
+                    <textarea value={formData.topicDesc} onChange={e => updateForm("topicDesc", e.target.value)} rows={4} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5 resize-none leading-relaxed" placeholder="صف بالضبط ما يجب أن يتضمنه هذا التقرير. اذكر أهم المحاور، النظريات، والمراجع..."></textarea>
                   </div>
                 </div>
               </div>
@@ -106,8 +107,8 @@ export default function NewReportForm() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   <div>
-                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">الجهة المانحة / الجامعة</label>
-                    <input type="text" value={formData.universityName} onChange={e => updateForm("universityName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="اسم الجامعة" />
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">اسم الجامعة</label>
+                    <input type="text" value={formData.universityName} onChange={e => updateForm("universityName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="اسم الجهة التعليمية" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">القسم الأكاديمي</label>
@@ -118,6 +119,10 @@ export default function NewReportForm() {
                     <input type="text" value={formData.academicStage} onChange={e => updateForm("academicStage", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="السنة الدراسية" />
                   </div>
                   <div>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">المادة</label>
+                    <input type="text" value={formData.subjectName || ""} onChange={e => updateForm("subjectName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="موضوع التقرير" />
+                  </div>
+                  <div className="md:col-span-2">
                     <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">أستاذ المادة</label>
                     <input type="text" value={formData.professorName} onChange={e => updateForm("professorName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="اسم الدكتور المشرف" />
                   </div>

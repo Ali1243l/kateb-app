@@ -1,75 +1,36 @@
-export interface TemplateMetadata {
+export interface ReportTemplate {
   id: string;
   name: string;
-  category: "Scientific" | "Modern" | "Classic" | "Minimalist" | "Presentation";
-  tags: string[]; // Used by AI Magic Button to Auto-Select
-  previewImage: string;
-  formatSupported: ("PDF" | "WORD" | "PPT")[];
+  category: "طبي" | "هندسي" | "إنسانيات" | "علوم" | "قانون وإدارة";
+  description: string;
+  aiPromptModifier: string;
 }
 
-// Simulated Central Registry for the 200 Templates
-// To prevent bloating the app bundle, we only load this metadata.
-export const TEMPLATE_REGISTRY: TemplateMetadata[] = [
-  {
-    id: "classic-1",
-    name: "الكلاسيكي الأكاديمي",
-    category: "Classic",
-    tags: ["history", "literature", "general", "academic"],
-    previewImage: "/templates/classic.png",
-    formatSupported: ["PDF", "WORD"]
-  },
-  {
-    id: "tech-modern",
-    name: "التقني الحديث",
-    category: "Modern",
-    tags: ["ai", "computer science", "engineering", "technology"],
-    previewImage: "/templates/tech.png",
-    formatSupported: ["PDF", "PPT"]
-  },
-  {
-    id: "medical-science",
-    name: "الطبي العلمي",
-    category: "Scientific",
-    tags: ["medicine", "biology", "chemistry", "research"],
-    previewImage: "/templates/medical.png",
-    formatSupported: ["PDF", "WORD", "PPT"]
-  },
-  // ... Imagine 197 more templates strictly defined here.
+const baseCategories = ["طبي", "هندسي", "إنسانيات", "علوم", "قانون وإدارة"] as const;
+const styles = [
+  "بحث تأصيلي", "دراسة حالة", "مراجعة أدبيات", "تحليل نقدي", 
+  "تقرير مختبري", "مشروع تطبيقي", "بحث وصفي", "بحث تاريخي"
 ];
+const variations = ["كلاسيكي (A4)", "حديث (Minimal)", "معاصر (Visual)", "معتمد (Standard)", "أوروبي (Oxford)"];
 
-export const getTemplateById = (templateId: string) => {
-  return TEMPLATE_REGISTRY.find(t => t.id === templateId) || TEMPLATE_REGISTRY[0];
-};
+// Programmatically scale to 200 Professional Templates dynamically
+export const templateRegistry: ReportTemplate[] = [];
 
-/**
- * AI Magic Selection Algorithm
- * Heuristics logic to match the topic descriptors against template tags.
- */
-export const autoSelectTemplate = (topicDescription: string): string => {
-  const words = topicDescription.toLowerCase().split(" ");
-  
-  let bestMatch = TEMPLATE_REGISTRY[0].id;
-  let highestScore = 0;
+let counter = 1;
 
-  for (const template of TEMPLATE_REGISTRY) {
-    let score = 0;
-    template.tags.forEach(tag => {
-      if (words.some(word => word.includes(tag))) {
-        score += 1;
-      }
+baseCategories.forEach((category) => {
+  styles.forEach((style) => {
+    variations.forEach((variation) => {
+      templateRegistry.push({
+        id: `tpl-${counter}`,
+        name: `${style} - طراز ${variation}`,
+        category: category,
+        description: `نموذج هيكلي مخصص لبناء ${style} خاضع لمعايير الـ (${category}) بأسلوب عرض ${variation}.`,
+        aiPromptModifier: `أرجو هيكلة مخرجات التقرير بناءً على المتطلبات الأكاديمية لـ (${style}). استخدم لغة مهنية متخصصة تناسب مجال الـ (${category}). الأسلوب الشكلي ينطوي على توجه ${variation}.`
+      });
+      counter++;
     });
+  });
+});
 
-    if (score > highestScore) {
-      highestScore = score;
-      bestMatch = template.id;
-    }
-  }
-
-  // If no match, return a random template from a specific fallback category
-  if (highestScore === 0) {
-    const fallbacks = TEMPLATE_REGISTRY.filter(t => t.category === "Modern");
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)].id;
-  }
-
-  return bestMatch;
-};
+export const getTemplateById = (id: string) => templateRegistry.find(t => t.id === id);

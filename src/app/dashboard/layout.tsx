@@ -9,9 +9,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "الرئيسية", href: "/dashboard", icon: LayoutDashboard },
+    { name: "الصفحة الرئيسية", href: "/dashboard", icon: LayoutDashboard },
     { name: "سجل التقارير", href: "/dashboard/reports", icon: FileText },
-    { name: "إعدادات الأرشيف", href: "/dashboard/settings", icon: Settings },
+    { name: "الإعدادات", href: "/dashboard/settings", icon: Settings },
   ];
 
   return (
@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           href="/dashboard/new" 
           className="bg-[var(--background-signature-gradient)] text-white shadow-ambient hover:opacity-90 transition-opacity w-full py-3.5 rounded-md flex items-center justify-center gap-2 mb-10 font-bold font-body"
         >
-          <PlusCircle className="w-5 h-5" /> وثيقة جديدة
+          <PlusCircle className="w-5 h-5" /> تقرير جديد
         </Link>
         
         <nav className="flex-1 space-y-2 font-body font-semibold">

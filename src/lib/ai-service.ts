@@ -1,61 +1,75 @@
 import OpenAI from "openai";
 
+// Configure OpenAI SDK to use NVIDIA NIM / DeepSeek endpoints
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "dummy_key_for_build",
+  apiKey: process.env.AI_API_KEY || "",
+  baseURL: "https://integrate.api.nvidia.com/v1", // Standard NVIDIA NIM endpoint containing DeepSeek-V3
 });
 
-export interface ReportGenerationParams {
-  topic: string;
+export interface GenerateReportRequest {
+  studentName: string;
+  universityName: string;
+  department: string;
+  academicStage: string;
+  professorName: string;
+  subjectName: string; // New field
+  reportTitle: string;
   topicDesc: string;
-  pages: number;
-  includeImages: boolean;
-  formatType: string;
 }
 
-export const generateArabicReport = async (params: ReportGenerationParams) => {
-  const systemPrompt = `أنت أكاديمي وباحث خبير متخصص في كتابة التقارير والأبحاث باللغة العربية الفصحى. 
-قواعد هامة جداً:
-1. يجب أن يكون التقرير مكتوباً بلغة سليمة، دقيقة، ومنظمة جداً.
-2. نسق الإجابة يجب أن يكون في شكل JSON حصراً لتسهيل معالجته برمجياً.
-3. التقرير يجب أن يغطي العنوان التالي: "${params.topic}" مع مراعاة الوصف: "${params.topicDesc}".
-4. يجب أن يكون طول المحتوى كافياً لتغطية حوالي ${params.pages} صفحات.
-5. الإخراج يجب أن يلتزم بالهيكل التالي بدقة:
-{
-  "title": "عنوان التقرير (يجب أن يكون جذاباً وأكاديمياً)",
-  "introduction": "مقدمة شاملة عن الموضوع لا تقل عن 200 كلمة",
-  "body": [
+export const generateAcademicReport = async (data: GenerateReportRequest) => {
+  if (!process.env.AI_API_KEY) {
+    throw new Error("API Key is missing. Please add AI_API_KEY to your environment.");
+  }
+
+  const prompt = `
+    أنت أكاديمي محترف وخبير في صياغة التقارير الجامعية باللغة العربية الفصحى.
+    المطلوب منك كتابة تقرير أكاديمي مفصل يشمل النظريات، التحليل، والمقدمة والخاتمة بالاستناد إلى المدخلات التالية:
+
+    - عنوان التقرير: ${data.reportTitle}
+    - التوجيه المحدد: ${data.topicDesc}
+    - الجامعة: ${data.universityName} | القسم: ${data.department} | المادة: ${data.subjectName}
+    
+    يجب أن يكون الناتج حصرياً بصيغة JSON تحتوي على الحقول التالية:
     {
-      "heading": "عنوان فرعي 1",
-      "content": "شرح مفصل للعنوان الفرعي..."
-    },
-    ... (أضف المزيد بناءً على طول التقرير المطلوب)
-  ],
-  "conclusion": "خاتمة تلخص أهم النتائج والتوصيات",
-  "references": [
-    "مرجع 1",
-    "مرجع 2"
-  ]
-}
-`;
+      "title": "عنوان التقرير المنقح",
+      "introduction": "مقدمة نقدية وأكاديمية",
+      "body": "محتوى التقرير مفصل في فقرات علمية دقيقة",
+      "conclusion": "الاستنتاج أو الخاتمة الأكاديمية",
+      "references": ["مرجع 1", "مرجع 2"]
+    }
+    
+    مهم جداً: أخرج JSON فقط بدون أي نصوص إضافية لتسهيل معالجتها برمجياً.
+  `;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+    const completion = await openai.chat.completions.create({
+      model: "deepseek-ai/deepseek-v3", // Specified by user
       messages: [
-        { role: "system", content: systemPrompt },
-        { 
-          role: "user", 
-          content: "قم بتوليد التقرير الآن باتباع الهيكل المطلوب بصيغة JSON." 
-        }
+        {
+          role: "system",
+          content: "You are an expert Arabic academic writer. Output MUST be strictly valid JSON.",
+        },
+        { role: "user", content: prompt },
       ],
-      response_format: { type: "json_object" },
       temperature: 0.7,
+      max_tokens: 3500,
     });
 
-    const outputString = response.choices[0].message.content || "{}";
-    return JSON.parse(outputString);
+    const resultText = completion.choices[0]?.message?.content || "{}";
+    
+    // Attempt to extract JSON if model wrapped it in markdown code blocks
+    let jsonMatch = resultText.match(/```json\n?([\s\S]*?)```/);
+    let parsedData = {};
+    if (jsonMatch && jsonMatch[1]) {
+        parsedData = JSON.parse(jsonMatch[1]);
+    } else {
+        parsedData = JSON.parse(resultText);
+    }
+    
+    return parsedData;
   } catch (error) {
-    console.error("AI Generation Error: ", error);
-    throw new Error("Failed to generate report using AI");
+    console.error("AI Generation Error:", error);
+    throw new Error("Failed to generate report content using DeepSeek-V3");
   }
 };

@@ -2,12 +2,11 @@ import { FileText, Download, Edit2 } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardPage() {
-  // Mockup Data
-  const recentReports = [
-    { id: "1", title: "تأثير خوارزميات التعلم العميق في القطاع الصحي", date: "١٢ ربيع الأول ١٤٤٨", status: "معتمد", type: "PDF" },
-    { id: "2", title: "دراسة حالة: التغير المناخي والسياسات العالمية", date: "٠٨ ربيع الأول ١٤٤٨", status: "تحت المراجعة", type: "Word" },
-    { id: "3", title: "مقدمة في هندسة البرمجيات المتقدمة", date: "٠١ ربيع الأول ١٤٤٨", status: "مكتمل", type: "PPTX" },
-  ];
+  // Empty Mockup Array
+  const recentReports: any[] = [];
+  
+  // Format current Gregorian Date
+  const today = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
     <div className="space-y-12">
@@ -21,7 +20,7 @@ export default function DashboardPage() {
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold opacity-50 font-body uppercase tracking-widest">تحديث اليوم</p>
-          <p className="text-xl font-bold font-display">١٥ ربيع الأول ١٤٤٨</p>
+          <p className="text-xl font-bold font-display">{today}</p>
         </div>
       </div>
 
@@ -65,29 +64,36 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {recentReports.map((report) => (
-                <tr key={report.id} className="transition-colors hover:bg-[var(--color-surface)]/50 group">
-                  <td className="px-6 py-5 font-bold text-lg text-[var(--color-on-surface)] leading-snug">{report.title}</td>
-                  <td className="px-6 py-5 text-[var(--color-on-surface)] opacity-80">{report.date}</td>
-                  <td className="px-6 py-5">
-                    <span className="font-bold opacity-70 uppercase tracking-widest text-xs">{report.type}</span>
-                  </td>
-                  <td className="px-6 py-5">
-                    {/* Status Badge - Full rounded capsule shape */}
-                    <span className="bg-[var(--color-secondary-fixed)] text-[var(--color-on-secondary-fixed-variant)] px-4 py-1.5 text-xs font-bold rounded-full inline-block">
-                      {report.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-center flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="text-[var(--color-primary)] hover:text-[var(--color-primary-container)] transition-colors p-2" title="تحميل">
-                      <Download className="w-5 h-5" />
-                    </button>
-                    <button className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] transition-colors p-2" title="تعديل">
-                      <Edit2 className="w-5 h-5" />
-                    </button>
+              {recentReports.length > 0 ? (
+                recentReports.map((report) => (
+                  <tr key={report.id} className="transition-colors hover:bg-[var(--color-surface)]/50 group">
+                    <td className="px-6 py-5 font-bold text-lg text-[var(--color-on-surface)] leading-snug">{report.title}</td>
+                    <td className="px-6 py-5 text-[var(--color-on-surface)] opacity-80">{report.date}</td>
+                    <td className="px-6 py-5">
+                      <span className="font-bold opacity-70 uppercase tracking-widest text-xs">{report.type}</span>
+                    </td>
+                    <td className="px-6 py-5">
+                      <span className="bg-[var(--color-secondary-fixed)] text-[var(--color-on-secondary-fixed-variant)] px-4 py-1.5 text-xs font-bold rounded-full inline-block">
+                        {report.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 text-center flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="text-[var(--color-primary)] hover:text-[var(--color-primary-container)] transition-colors p-2" title="تحميل">
+                        <Download className="w-5 h-5" />
+                      </button>
+                      <button className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] transition-colors p-2" title="تعديل">
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-lg text-[var(--color-on-surface)] opacity-60 font-body">
+                    لا توجد تقارير مسجلة حتى الآن. ابدأ بإنشاء تقريرك الأول!
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

@@ -1,41 +1,66 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: #0f172a;
-  --color-primary-foreground: #ffffff;
-  --color-primary-hover: #1e293b;
-  --color-secondary: #f1f5f9;
-  --color-secondary-foreground: #0f172a;
-  --color-accent: #3b82f6;
-  --color-accent-foreground: #ffffff;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
-  --font-sans: var(--font-cairo);
-  --font-cairo: var(--font-cairo);
+  --color-primary: #00346f;
+  --color-primary-container: #004a99;
+  
+  /* The Digital Archivist Surfaces */
+  --color-surface: #f8f9fa;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #e0e0e0;
+  
+  --color-on-surface: #191c1d;
+  --color-outline-variant: #72777a;
+
+  /* Custom Status Badges */
+  --color-secondary-fixed: #e2e8f0;
+  --color-on-secondary-fixed-variant: #334155;
+
+  --font-display: var(--font-tajawal);
+  --font-body: var(--font-cairo);
+
+  --shadow-ambient: 0 4px 32px 0 rgba(25, 28, 29, 0.06);
+  --background-signature-gradient: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #020617;
+  --background: var(--color-surface);
+  --foreground: var(--color-on-surface);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #020617;
-    --foreground: #f8fafc;
-    --color-primary: #ffffff;
-    --color-primary-foreground: #020617;
-    --color-primary-hover: #e2e8f0;
-    --color-secondary: #0f172a;
-    --color-secondary-foreground: #f8fafc;
-    --color-border: #1e293b;
+    /* Subtle overrides for Dark Mode maintaining the editorial layout but shifted */
+    --color-surface: #121212;
+    --color-surface-container-low: #1e1e1e;
+    --color-surface-container-lowest: #2c2c2c;
+    --color-surface-container-highest: #333333;
+    
+    --color-on-surface: #e4e4e4;
+    --color-primary: #66a3ff;
+    --color-primary-container: #3385ff;
+    --color-outline-variant: #a1a1a1;
+
+    --background: var(--color-surface);
+    --foreground: var(--color-on-surface);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-cairo), sans-serif;
+  font-family: var(--font-body), sans-serif;
+}
+
+/* The Ghost Border - Global override for input fields */
+input, textarea {
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 20%, transparent) !important;
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus, textarea:focus {
+  border: 1px solid var(--color-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  outline: none;
 }

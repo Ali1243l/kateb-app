@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronLeft, Send, Sparkles, BookOpen, Layers, Settings2, Image as ImageIcon } from "lucide-react";
+import { ArrowRight, ArrowLeft, Send, PenTool, LayoutTemplate, Settings2 } from "lucide-react";
 
 export default function NewReportForm() {
   const [step, setStep] = useState(1);
@@ -25,179 +25,156 @@ export default function NewReportForm() {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
-  const nextStep = () => setStep(s => Math.min(4, s + 1));
+  const nextStep = () => setStep(s => Math.min(3, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
 
-  const steps = [
-    { num: 1, title: "المعلومات الأساسية", icon: BookOpen },
-    { num: 2, title: "موضوع التقرير", icon: Layers },
-    { num: 3, title: "إعدادات التنسيق", icon: Settings2 },
-    { num: 4, title: "القوالب والمراجعة", icon: Sparkles }
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 mb-3">مولد التقارير الذكي</h1>
-        <p className="text-muted-foreground">أدخل تفاصيل التقرير وسيقوم الذكاء الاصطناعي بإنشائه بتنسيق أكاديمي احترافي</p>
-      </div>
-
-      {/* Progress Tracker */}
-      <div className="flex justify-between items-center mb-12 relative before:absolute before:top-1/2 before:w-full before:h-1 before:bg-white/10 before:-z-10 before:rounded-full">
-        <div className="absolute top-1/2 h-1 bg-gradient-to-r from-blue-600 to-purple-600 -z-10 transition-all duration-500 rounded-full" style={{ width: `${((step - 1) / 3) * 100}%` }} />
+    <div className="max-w-[800px] mx-auto py-10 space-y-16">
+      
+      {/* Asymmetrical Header and Step Tracker */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
+        <div className="max-w-md">
+          <p className="text-[var(--color-primary)] font-bold text-sm tracking-widest uppercase mb-4">إنشاء جديد</p>
+          <h1 className="text-[3.5rem] leading-[1.1] font-display font-bold text-[var(--color-primary)] mb-4">وثيقة<br/>أكاديمية</h1>
+        </div>
         
-        {steps.map((s) => (
-          <div key={s.num} className="flex flex-col items-center gap-2">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg ${
-              step >= s.num ? "bg-gradient-to-tr from-blue-600 to-purple-600 text-white scale-110" : "bg-black/10 dark:bg-white/10 text-foreground/50"
-            }`}>
-              <s.icon className="w-5 h-5" />
+        {/* Layered step tracker */}
+        <div className="flex items-center gap-4 bg-[var(--color-surface-container-lowest)] p-3 rounded-full shadow-ambient font-body text-sm font-bold">
+          {[1, 2, 3].map(num => (
+            <div key={num} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${step === num ? "bg-[var(--color-primary)] text-white" : step > num ? "bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)]" : "text-[var(--color-outline-variant)]"}`}>
+              {num}
             </div>
-            <span className={`text-sm font-medium ${step >= s.num ? "text-foreground" : "text-foreground/50"} hidden md:block`}>{s.title}</span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      <div className="bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+      {/* Main Form Container - No lines, relies on shadow-ambient and background shift */}
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl shadow-ambient p-10 font-body relative overflow-hidden min-h-[500px]">
+        {/* Subtle glass effect accent over everything */}
+        <div className="absolute top-0 right-0 w-full h-1 bg-[var(--background-signature-gradient)]"></div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 30 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Step 1: Basic Info */}
+            {/* STEP 1: Metadata */}
             {step === 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">اسم الطالب</label>
-                  <input type="text" value={formData.studentName} onChange={e => updateForm("studentName", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="الاسم الكامل" />
+              <div className="space-y-10">
+                <div className="border-b-[4px] border-[var(--color-surface)] pb-6 mb-8 flex items-center gap-3">
+                  <PenTool className="text-[var(--color-primary)] w-6 h-6" />
+                  <h2 className="text-2xl font-display font-bold text-[var(--color-primary)]">بيانات البحث</h2>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">اسم الجامعة</label>
-                  <input type="text" value={formData.universityName} onChange={e => updateForm("universityName", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="جامعة بغداد" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">الكلية / القسم</label>
-                  <input type="text" value={formData.department} onChange={e => updateForm("department", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="كلية الهندسة / قسم الحاسبات" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">المرحلة الأكاديمية</label>
-                  <input type="text" value={formData.academicStage} onChange={e => updateForm("academicStage", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="المرحلة الثانية" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">الكروب / الشعبة</label>
-                  <input type="text" value={formData.groupSection} onChange={e => updateForm("groupSection", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="A1" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">اسم الدكتور</label>
-                  <input type="text" value={formData.professorName} onChange={e => updateForm("professorName", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-purple-500 outline-none" placeholder="د. علي أحمد" />
-                </div>
-              </div>
-            )}
 
-            {/* Step 2: Topic Details */}
-            {step === 2 && (
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">عنوان أو موضوع التقرير</label>
-                  <input type="text" value={formData.reportTitle} onChange={e => updateForm("reportTitle", e.target.value)} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500 outline-none text-lg font-bold placeholder:font-normal" placeholder="مثال: تأثير الذكاء الاصطناعي في الطب" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground/80">وصف دقيق لما يجب أن يحتويه التقرير</label>
-                  <textarea value={formData.topicDesc} onChange={e => updateForm("topicDesc", e.target.value)} rows={6} className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="اكتب وصفاً مفصلاً يوجه الذكاء الاصطناعي. اذكر أهم المحاور، المراجع المطلوبة، أو أي أرقام وإحصائيات ترغب بتضمينها..."></textarea>
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Settings */}
-            {step === 3 && (
-              <div className="space-y-8">
-                <div>
-                  <label className="block text-lg font-semibold mb-4 text-foreground">نوع التقرير وصيغة الإخراج</label>
-                  <div className="flex gap-4">
-                    {["PDF", "WORD", "PPT"].map((type) => (
-                      <button 
-                        key={type}
-                        onClick={() => updateForm("formatType", type)}
-                        className={`flex-1 py-4 rounded-2xl border-2 transition-all font-bold ${formData.formatType === type ? "border-blue-500 bg-blue-500/10 text-blue-500" : "border-white/5 bg-white/5 text-foreground/70 outline-none hover:bg-white/10"}`}
-                      >
-                        {type === "PPT" ? "عرض تقديمي (PPT)" : `تقرير أكاديمي (${type})`}
-                      </button>
-                    ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                  <div>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">عنوان الوثيقة</label>
+                    <input type="text" value={formData.reportTitle} onChange={e => updateForm("reportTitle", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5 font-bold text-lg" placeholder="مثال: ديناميكية الموائع" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">اسم الباحث</label>
+                    <input type="text" value={formData.studentName} onChange={e => updateForm("studentName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="الاسم الكامل" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">نطاق التوجيه للذكاء الاصطناعي</label>
+                    <textarea value={formData.topicDesc} onChange={e => updateForm("topicDesc", e.target.value)} rows={4} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5 resize-none leading-relaxed" placeholder="صف بالضبط ما يجب أن تتضمنه هذه الوثيقة. اذكر أهم المحاور، النظريات، والمراجع..."></textarea>
                   </div>
                 </div>
+              </div>
+            )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* STEP 2: University Metadata */}
+            {step === 2 && (
+              <div className="space-y-10">
+                <div className="border-b-[4px] border-[var(--color-surface)] pb-6 mb-8 flex items-center gap-3">
+                  <LayoutTemplate className="text-[var(--color-primary)] w-6 h-6" />
+                  <h2 className="text-2xl font-display font-bold text-[var(--color-primary)]">التوثيق الأكاديمي</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   <div>
-                    <label className="block text-lg font-semibold mb-4 text-foreground">طول التقرير (عدد الصفحات/الشرائح)</label>
-                    <div className="flex items-center gap-4">
-                      <input type="range" min="1" max="50" value={formData.pageLength} onChange={e => updateForm("pageLength", parseInt(e.target.value))} className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500" />
-                      <span className="text-2xl font-bold text-blue-500 bg-blue-500/10 px-4 py-2 rounded-xl min-w-[70px] text-center">{formData.pageLength}</span>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">الجهة المانحة / الجامعة</label>
+                    <input type="text" value={formData.universityName} onChange={e => updateForm("universityName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="اسم الجامعة" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">القسم الأكاديمي</label>
+                    <input type="text" value={formData.department} onChange={e => updateForm("department", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="اسم الكلية والقسم" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">المرحلة الدراسية</label>
+                    <input type="text" value={formData.academicStage} onChange={e => updateForm("academicStage", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="السنة الدراسية" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-3 text-[var(--color-on-surface)]">أستاذ المادة</label>
+                    <input type="text" value={formData.professorName} onChange={e => updateForm("professorName", e.target.value)} className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-4 px-5" placeholder="اسم الدكتور المشرف" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: Outputs */}
+            {step === 3 && (
+              <div className="space-y-10">
+                <div className="border-b-[4px] border-[var(--color-surface)] pb-6 mb-8 flex items-center gap-3">
+                  <Settings2 className="text-[var(--color-primary)] w-6 h-6" />
+                  <h2 className="text-2xl font-display font-bold text-[var(--color-primary)]">محددات التصدير</h2>
+                </div>
+
+                <div className="space-y-12">
+                  <div>
+                    <label className="block text-sm font-bold mb-5 text-[var(--color-on-surface)]">المخرجات</label>
+                    <div className="flex gap-4">
+                      {["PDF", "WORD", "PPT"].map((type) => (
+                        <button 
+                          key={type}
+                          onClick={() => updateForm("formatType", type)}
+                          className={`flex-1 py-5 rounded-md font-bold transition-all ${formData.formatType === type ? "bg-[var(--color-primary)] text-white shadow-ambient" : "bg-[var(--color-surface-container-highest)] opacity-60 hover:opacity-100"}`}
+                        >
+                          {type}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-lg font-semibold mb-4 text-foreground">تضمين الوسائط المتعددة والصور</label>
-                    <button 
-                      onClick={() => updateForm("includeImages", !formData.includeImages)}
-                      className={`w-full py-4 rounded-xl flex items-center justify-center gap-3 transition-colors ${formData.includeImages ? "bg-green-500/20 text-green-500 font-bold" : "bg-white/5 text-foreground/50"}`}
-                    >
-                      <ImageIcon className="w-5 h-5" />
-                      {formData.includeImages ? "يحتوي على صور توضيحية ومخططات" : "بدون صور (نص فقط)"}
-                    </button>
+                    <div className="flex justify-between items-center mb-5">
+                      <label className="block text-sm font-bold text-[var(--color-on-surface)]">حجم الوثيقة (صفحات)</label>
+                      <span className="text-2xl font-display font-bold text-[var(--color-primary)]">{formData.pageLength}</span>
+                    </div>
+                    <input type="range" min="1" max="50" value={formData.pageLength} onChange={e => updateForm("pageLength", parseInt(e.target.value))} className="w-full h-3 bg-[var(--color-surface-container-low)] rounded-full appearance-none cursor-pointer" />
                   </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Template & Finalize */}
-            {step === 4 && (
-              <div className="space-y-8 text-center">
-                <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full mx-auto flex items-center justify-center shadow-xl animate-bounce">
-                  <Sparkles className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold">جاهز لإنشاء التقرير باستخدام AI السحري!</h2>
-                <p className="text-muted-foreground w-3/4 mx-auto leading-relaxed">
-                  سيطبق التطبيق الآن خوارزمية الذكاء الاصطناعي لاختيار الأنسب من بين 200 قالب استناداً إلى الموضوع (Tags matching). سيتم جلب النصوص باللغة العربية الفصحى الأكاديمية وبناء المستندات برمجياً بصيغة {formData.formatType}.
-                </p>
-                <div className="bg-black/20 dark:bg-white/5 p-6 rounded-2xl w-full text-right">
-                  <h3 className="font-bold text-blue-500 mb-2">ملخص ما سيتم إنشاؤه:</h3>
-                  <ul className="list-disc list-inside text-foreground/80 space-y-2">
-                    <li>العنوان: <span className="font-semibold text-foreground">{formData.reportTitle || "بدون عنوان"}</span></li>
-                    <li>المعلومات: يتم إضافة <span className="text-foreground font-semibold">{formData.studentName}</span> و <span className="text-foreground font-semibold">{formData.professorName}</span> لصفحة الغلاف الأوتوماتيكية.</li>
-                    <li>الطول والتنسيق: <span className="text-foreground font-semibold">{formData.pageLength}</span> صفحات/شرائح بصيغة <span className="text-foreground font-semibold">{formData.formatType}</span> ({formData.includeImages ? "مدعوم بالصور" : "بدون صور"}).</li>
-                  </ul>
                 </div>
               </div>
             )}
           </motion.div>
         </AnimatePresence>
 
-        {/* Form Controls */}
-        <div className="flex justify-between items-center mt-10 pt-6 border-t border-white/10">
+        {/* Footer Actions */}
+        <div className="mt-16 flex justify-between items-center">
           <button 
             onClick={prevStep}
             disabled={step === 1}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${step === 1 ? "opacity-0 pointer-events-none" : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-foreground"}`}
+            className={`flex items-center gap-2 px-6 py-3.5 rounded-md font-bold transition-all ${step === 1 ? "opacity-0 pointer-events-none" : "text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-low)]"}`}
           >
-            <ChevronRight className="w-5 h-5" /> رجوع
+            <ArrowRight className="w-5 h-5" /> العودة
           </button>
           
-          {step < 4 ? (
+          {step < 3 ? (
             <button 
               onClick={nextStep}
-              className="flex items-center gap-2 px-8 py-3 rounded-xl font-semibold bg-white text-black hover:bg-gray-200 transition-all shadow-lg"
+              className="flex items-center gap-2 px-8 py-3.5 rounded-md font-bold text-[var(--color-primary)] bg-[var(--color-surface)] hover:shadow-ambient transition-all"
             >
-              الخطوة التالية <ChevronLeft className="w-5 h-5" />
+              التالي <ArrowLeft className="w-5 h-5" />
             </button>
           ) : (
             <button 
-              onClick={() => alert("سيتم الآن نداء API الذكاء الاصطناعي")}
-              className="flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-500 hover:to-blue-500 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
+              onClick={() => alert("سيتم تشغيل أداة التحليل التوليدي")}
+              className="flex items-center gap-2 px-10 py-4 rounded-md font-bold bg-[var(--background-signature-gradient)] text-white shadow-ambient hover:opacity-90 transition-opacity"
             >
-              <Send className="w-5 h-5" /> إنشاء وتوليد التقرير
+              <Send className="w-5 h-5" /> توليد الوثيقة
             </button>
           )}
         </div>

@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import { Tajawal, Cairo } from "next/font/google";
 import "./globals.css";
+
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  subsets: ["arabic"],
+  weight: ["400", "500", "700", "800"], // Display/Headlines
+});
 
 const cairo = Cairo({
   variable: "--font-cairo",
   subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "600"], // Body text reading format
 });
 
 export const metadata: Metadata = {
-  title: "منصة التقارير الأكاديمية",
-  description: "أتمتة إنشاء التقارير الجامعية والعروض التقديمية باحترافية",
+  title: "منصة الأرشيف الرقمي | التقارير الأكاديمية",
+  description: "نظام كتابة وتوليد التقارير الجامعية الأكاديمية",
 };
 
 export default function RootLayout({
@@ -22,9 +28,11 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${cairo.variable} h-full antialiased`}
+      className={`${tajawal.variable} ${cairo.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-cairo bg-background text-foreground">{children}</body>
+      <body className="min-h-full flex flex-col font-body bg-[var(--color-surface)] text-[var(--color-on-surface)] leading-[1.6]">
+        {children}
+      </body>
     </html>
   );
 }

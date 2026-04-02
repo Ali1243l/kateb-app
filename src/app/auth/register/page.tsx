@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, UserPlus, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -19,8 +19,6 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
-    // Setup an API route later: await fetch('/api/auth/register', ...)
-    // For now, mockup success and push to login
     setTimeout(() => {
       setLoading(false);
       router.push("/auth/login?registered=true");
@@ -28,117 +26,94 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-[10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="min-h-screen flex items-center justify-center p-4">
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md"
       >
-        <div className="bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-          <div className="text-center mb-8">
-            <motion.div 
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-              className="w-16 h-16 bg-gradient-to-tr from-purple-600 to-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg"
-            >
-              <UserPlus className="w-8 h-8 text-white" />
-            </motion.div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">إنشاء حساب</h1>
-            <p className="text-muted-foreground text-sm">سجل الآن للبدء بإنشاء تقاريرك باحترافية</p>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-ambient">
+          <div className="mb-10 text-right font-display">
+            <h1 className="text-[2.5rem] leading-[1.1] font-bold text-[var(--color-primary)] mb-3">
+              فتح سجل<br />جديـد
+            </h1>
+            <p className="text-sm font-body text-[var(--color-on-surface)] opacity-70">
+              قم بإدخال بيناتك لاعتمادك في أرشيف التقارير
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6 font-body">
             {error && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg border border-destructive/20 text-center"
-              >
+              <div className="bg-[#fff1f0] text-[#cf1322] px-4 py-3 rounded-md text-sm border-l-4 border-[#cf1322]">
                 {error}
-              </motion.div>
+              </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground/80">الاسم الكامل</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-muted-foreground/50" />
-                  </div>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-                    placeholder="أحمد محمد"
-                  />
-                </div>
+                <label className="block text-sm font-semibold mb-2 text-[var(--color-on-surface)]">
+                  الاسم الرباعي
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-3 px-4 focus:ring-2 focus:ring-[var(--color-primary)]"
+                  placeholder="يُكتب كما في الوثائق الرسمية"
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground/80">البريد الإلكتروني</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-muted-foreground/50" />
-                  </div>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    dir="ltr"
-                    className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all placeholder:text-right"
-                    placeholder="student@university.edu"
-                  />
-                </div>
+                <label className="block text-sm font-semibold mb-2 text-[var(--color-on-surface)]">
+                  البريد الجامعي
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  dir="ltr"
+                  className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-3 px-4 text-left placeholder:text-right"
+                  placeholder="name@university.edu"
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-foreground/80">كلمة المرور</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-muted-foreground/50" />
-                  </div>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    dir="ltr"
-                    className="w-full bg-black/5 dark:bg-white/5 border border-white/10 rounded-xl py-3 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all placeholder:text-right"
-                    placeholder="••••••••"
-                  />
-                </div>
+                <label className="block text-sm font-semibold mb-2 text-[var(--color-on-surface)]">
+                  الرمز السري
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  dir="ltr"
+                  className="w-full bg-[var(--color-surface-container-highest)] rounded-md py-3 px-4 text-left placeholder:text-right"
+                  placeholder="••••••••"
+                />
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+              className="w-full mt-4 bg-[var(--background-signature-gradient)] text-white font-bold py-3.5 px-4 rounded-md shadow-ambient hover:opacity-90 transition-opacity flex items-center justify-between group disabled:opacity-50"
             >
+              <span>تسجيل واعتماد</span>
               {loading ? (
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <>
-                  <span>إنشاء الحساب</span>
-                  <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                </>
+                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-foreground/60">
-            لديك حساب بالفعل؟{" "}
-            <Link href="/auth/login" className="text-purple-500 hover:text-blue-500 font-medium transition-colors">
-              تسجيل الدخول
+          <div className="mt-8 pt-6 border-t border-[var(--color-surface-container-highest)] text-center text-sm font-body">
+            مسجل مسبقاً؟{" "}
+            <Link href="/auth/login" className="text-[var(--color-primary)] font-bold hover:underline underline-offset-4">
+              العودة للدخول
             </Link>
           </div>
         </div>

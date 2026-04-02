@@ -3,78 +3,73 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
-import { LayoutDashboard, FileText, Settings, LogOut, PlusCircle } from "lucide-react";
+import { LayoutDashboard, FileText, Settings, LogOut, PlusCircle, BookOpen } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const navItems = [
     { name: "الرئيسية", href: "/dashboard", icon: LayoutDashboard },
-    { name: "تقاريري", href: "/dashboard/reports", icon: FileText },
-    { name: "الإعدادات", href: "/dashboard/settings", icon: Settings },
+    { name: "سجل التقارير", href: "/dashboard/reports", icon: FileText },
+    { name: "إعدادات الأرشيف", href: "/dashboard/settings", icon: Settings },
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 border-l border-white/5 bg-black/5 dark:bg-white/5 backdrop-blur-xl p-6 hidden md:flex flex-col">
-        <div className="mb-10 flex items-center justify-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex shadow-lg items-center justify-center">
-            <FileText className="text-white w-6 h-6" />
+    <div className="min-h-screen bg-[var(--color-surface)] flex">
+      {/* Sidebar Navigation - using surface_container_low for physical separation, NO borders */}
+      <aside className="w-[280px] bg-[var(--color-surface-container-low)] py-10 px-6 hidden md:flex flex-col">
+        <div className="mb-14 flex items-center gap-3">
+          <div className="w-10 h-10 bg-[var(--background-signature-gradient)] rounded-md flex items-center justify-center">
+            <BookOpen className="text-white w-5 h-5" />
           </div>
-          <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-            منصة التقارير
+          <h2 className="text-xl font-display font-bold text-[var(--color-on-surface)]">
+            الأرشيف الرقمي
           </h2>
         </div>
 
-        <Link href="/dashboard/new" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full py-3 rounded-xl flex items-center justify-center gap-2 mb-8 font-semibold">
-          <PlusCircle className="w-5 h-5" /> إنشاء تقرير جديد
+        <Link 
+          href="/dashboard/new" 
+          className="bg-[var(--background-signature-gradient)] text-white shadow-ambient hover:opacity-90 transition-opacity w-full py-3.5 rounded-md flex items-center justify-center gap-2 mb-10 font-bold font-body"
+        >
+          <PlusCircle className="w-5 h-5" /> وثيقة جديدة
         </Link>
         
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-2 font-body font-semibold">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
             return (
               <Link 
                 key={item.href} 
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                className={`relative flex items-center gap-3 px-4 py-3.5 rounded-md transition-all ${
                   isActive 
-                    ? "bg-blue-600/10 text-blue-600 dark:text-blue-400 font-semibold" 
-                    : "text-foreground/70 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
+                    ? "text-[var(--color-primary)] bg-[var(--color-surface-container-highest)]/30" 
+                    : "text-[var(--color-on-surface)] opacity-70 hover:opacity-100"
                 }`}
               >
+                {isActive && (
+                  /* 2px Signature vertical accent bar denoting focus */
+                  <div className="absolute right-0 w-[3px] h-full bg-[var(--color-primary)] rounded-l-md" />
+                )}
                 <item.icon className="w-5 h-5" />
                 <span>{item.name}</span>
-                {isActive && (
-                  <motion.div 
-                    layoutId="active-nav" 
-                    className="absolute right-0 w-1 h-8 bg-blue-600 dark:bg-blue-500 rounded-r-full"
-                  />
-                )}
               </Link>
             );
           })}
         </nav>
 
         <div className="mt-auto">
-          <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all w-full text-right font-medium">
-            <LogOut className="w-5 h-5" /> تسجيل الخروج
+          <button className="flex items-center gap-3 px-4 py-3.5 rounded-md text-red-600/90 hover:bg-red-50/50 transition-all w-full text-right font-bold font-body">
+            <LogOut className="w-5 h-5" /> خروج
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-6 lg:p-10 overflow-y-auto">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="max-w-6xl mx-auto"
-        >
+      <main className="flex-1 p-8 lg:p-14 overflow-y-auto w-full">
+        <div className="max-w-[1100px] mx-auto w-full">
           {children}
-        </motion.div>
+        </div>
       </main>
     </div>
   );

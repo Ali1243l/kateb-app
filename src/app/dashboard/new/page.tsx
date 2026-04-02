@@ -6,6 +6,7 @@ import { ArrowRight, ArrowLeft, Send, PenTool, LayoutTemplate, Settings2 } from 
 
 export default function NewReportForm() {
   const [step, setStep] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [formData, setFormData] = useState({
     studentName: "",
     universityName: "",
@@ -27,6 +28,15 @@ export default function NewReportForm() {
 
   const nextStep = () => setStep(s => Math.min(3, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    // محاكاة إرسال البيانات للـ API
+    setTimeout(() => {
+      setIsGenerating(false);
+      window.location.href = "/dashboard";
+    }, 2500);
+  };
 
   return (
     <div className="max-w-[800px] mx-auto py-10 space-y-16">
@@ -171,10 +181,20 @@ export default function NewReportForm() {
             </button>
           ) : (
             <button 
-              onClick={() => alert("سيتم تشغيل أداة التحليل التوليدي")}
-              className="flex items-center gap-2 px-10 py-4 rounded-md font-bold bg-[var(--background-signature-gradient)] text-white shadow-ambient hover:opacity-90 transition-opacity"
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="flex items-center gap-2 px-10 py-4 rounded-md font-bold bg-[var(--background-signature-gradient)] text-white shadow-ambient hover:opacity-90 transition-opacity disabled:opacity-70"
             >
-              <Send className="w-5 h-5" /> توليد الوثيقة
+              {isGenerating ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  جاري التوليد...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" /> توليد الوثيقة
+                </>
+              )}
             </button>
           )}
         </div>
